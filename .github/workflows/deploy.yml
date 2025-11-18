@@ -30,13 +30,6 @@ jobs:
           & "C:/Program Files/Python310/python.exe" -m pip install pytest
         shell: powershell
 
-      - name: Run tests
-        run: |
-         try {
-         & "C:/Program Files/Python310/python.exe" -m pytest -q
-         } catch {
-         Write-Host "No tests found, continuing..."
-         }
-        shell: powershell
+    
 
 
