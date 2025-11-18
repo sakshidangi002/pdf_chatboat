@@ -33,9 +33,10 @@ jobs:
       - name: Run tests
         run: |
          try {
-           & "C:/Program Files/Python310/python.exe" -m pytest -q
-           } catch {
-           Write-Host "No tests found, exiting without error."
-          }
-
+         & "C:/Program Files/Python310/python.exe" -m pytest -q
+         } catch {
+         Write-Host "No tests found, continuing..."
+         }
         shell: powershell
+
+
