@@ -1,1 +1,51 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for more information:
+# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+# https://containers.dev/guide/dependabot
 
+name: CI
+
+on:
+  push:
+    branches:
+      - master 
+   
+jobs:
+   build-and-test:
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        python-version: [3.12]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r dev-requirements.txt || true
+
+      - name: Lint (flake8)
+        run: |
+          if command -v flake8; then flake8 || true; fi
+
+      - name: Run tests
+        run: |
+          pytest -q
