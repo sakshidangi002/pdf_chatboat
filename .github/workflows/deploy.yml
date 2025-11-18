@@ -14,13 +14,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Use system Python
-        run: py -3.13.6 --version
+        run: py -3.10.9 --version
         shell: powershell
 
       - name: Install dependencies
         run: |
-          py -3.13.6 -m pip install --upgrade pip
-          if (Test-Path "requirements.txt") { py -3.10 -m pip install -r requirements.txt }
+          py -3.10.9 -m pip install --upgrade pip
+          if (Test-Path "requirements.txt") { py -3.10.9 -m pip install -r requirements.txt }
         shell: powershell
 
       - name: Lint
@@ -29,5 +29,5 @@ jobs:
         shell: powershell
 
       - name: Run tests
-        run: py -3.13.6 -m pytest -q
+        run: py -3.10.9 -m pytest -q
         shell: powershell
