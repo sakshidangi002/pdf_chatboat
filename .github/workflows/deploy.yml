@@ -1,51 +1,34 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for more information:
-# https://docs.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
-# https://containers.dev/guide/dependabot
-
 name: CI
-   
+
 on:
   push:
     branches:
-      - master  
-   
-jobs:
-   build-and-test:
-    runs-on: self-hosted
+      - master
 
-    strategy:
-      matrix:
-        python-version: [3.10.9]
+jobs:
+  build-and-test:
+    runs-on: [self-hosted, Windows, X64]   # MUST match your runner labels
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Cache pip
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+      - name: Use system Python
+        run: python --version
+        shell: powershell
 
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install -r dev-requirements.txt || true
+          if (Test-Path "requirements.txt") { pip install -r requirements.txt }
+        shell: powershell
 
-      - name: Lint (flake8)
+      - name: Lint
         run: |
-          if command -v flake8; then flake8 || true; fi
+          if (Get-Command flake8 -ErrorAction SilentlyContinue) { flake8 }
+        shell: powershell
 
       - name: Run tests
         run: |
           pytest -q
+        shell: powershell
