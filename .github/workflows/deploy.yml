@@ -10,24 +10,18 @@ jobs:
     runs-on: [self-hosted, Windows, X64]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Use system Python
-        run: py -3.10.9 --version
+      - name: Check Python
+        run: python --version
         shell: powershell
 
       - name: Install dependencies
         run: |
-          py -3.10.9 -m pip install --upgrade pip
-          if (Test-Path "requirements.txt") { py -3.10.9 -m pip install -r requirements.txt }
-        shell: powershell
-
-      - name: Lint
-        run: |
-          if (Get-Command flake8 -ErrorAction SilentlyContinue) { flake8 }
+          python -m pip install --upgrade pip
+          if (Test-Path "requirements.txt") { python -m pip install -r requirements.txt }
         shell: powershell
 
       - name: Run tests
-        run: py -3.10.9 -m pytest -q
+        run: python -m pytest -q
         shell: powershell
